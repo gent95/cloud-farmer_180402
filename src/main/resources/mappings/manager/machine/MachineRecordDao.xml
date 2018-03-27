@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.machine.dao.MachineRecordDao">
+    
+	<sql id="machineRecordColumns">
+		a.id AS "id",
+		a.farmer_id AS "farmerId",
+		a.farmland_id AS "farmlandId",
+		a.plant_name AS "plantName",
+		a.machine_mode AS "machineMode",
+		a.total_weight AS "totalWeight",
+		a.single_weight AS "singleWeight",
+		a.admin AS "admin",
+		a.machine_time AS "machineTime",
+		a.remark AS "remark",
+		a.create_by AS "createBy.id",
+		a.update_by AS "updateBy.id",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.user_id AS "user.id",
+		a.used_id AS "usedId",
+		u15.name AS "user.name"
+	</sql>
+	
+	<sql id="machineRecordJoins">
+		LEFT JOIN sys_user u15 ON u15.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="MachineRecord">
+		SELECT 
+			<include refid="machineRecordColumns"/>
+		FROM jc_machine_record a
+		<include refid="machineRecordJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MachineRecord">
+		SELECT 
+			<include refid="machineRecordColumns"/>
+		FROM jc_machine_record a
+		<include refid="machineRecordJoins"/>
+		<where>
+			
+			<if test="machineMode != null and machineMode != ''">
+				AND a.machine_mode LIKE
+					<if test="dbName == 'oracle'">'%'||#{machineMode}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{machineMode}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{machineMode},'%')</if>
+			</if>
+			<if test="plantName != null and plantName != ''">
+				AND a.plant_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{plantName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{plantName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{plantName},'%')</if>
+			</if>
+			<if test="usedId != null and usedId != ''">
+				AND a.used_id =#{usedId}
+			</if>
+			<if test="user != null and user.id!=null and user.id != ''">
+				AND a.user_id =#{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="MachineRecord">
+		SELECT 
+			<include refid="machineRecordColumns"/>
+		FROM jc_machine_record a
+		<include refid="machineRecordJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_machine_record(
+			id,
+			farmer_id,
+			farmland_id,
+			plant_name,
+			machine_mode,
+			total_weight,
+			single_weight,
+			admin,
+			machine_time,
+			remark,
+			update_by,
+			used_id,
+			user_id
+		) VALUES (
+			#{id},
+			#{farmerId},
+			#{farmlandId},
+			#{plantName},
+			#{machineMode},
+			#{totalWeight},
+			#{singleWeight},
+			#{admin},
+			#{machineTime},
+			#{remark},
+			#{updateBy.id},
+			#{usedId},
+			#{user.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_machine_record SET 	
+			farmer_id = #{farmerId},
+			farmland_id = #{farmlandId},
+			plant_name = #{plantName},
+			machine_mode = #{machineMode},
+			total_weight = #{totalWeight},
+			single_weight = #{singleWeight},
+			admin = #{admin},
+			machine_time = #{machineTime},
+			remark = #{remark},
+			update_by = #{updateBy.id},
+			used_id=#{usedId},
+			user_id = #{user.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_machine_record
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

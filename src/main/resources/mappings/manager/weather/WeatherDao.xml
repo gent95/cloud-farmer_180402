@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.weather.dao.WeatherDao">
+    
+	<sql id="weatherColumns">
+		a.id AS "id",
+		a.number_id AS "numberId",
+		a.add_time AS "addTime",
+		a.wind_speed AS "windSpeed",
+		a.wind_direction AS "windDirection",
+		a.rainfall AS "rainfall",
+		a.temperature AS "temperature",
+		a.humidity AS "humidity",
+		a.air_pressure AS "airPressure",
+		a.co2 AS "co2",
+		a.photosynthetically AS "photosynthetically",
+		a.sunlight_duration AS "sunlightDuration",
+		a.radiate AS "radiate",
+		a.evaporation_capacity AS "evaporationCapacity",
+		a.voltage AS "voltage",
+		a.soil_temperature10 AS "soilTemperature10",
+		a.soil_humidity10 AS "soilHumidity10",
+		a.soil_temperature20 AS "soilTemperature20",
+		a.soil_humidity20 AS "soilHumidity20",
+		a.soil_temperature30 AS "soilTemperature30",
+		a.soil_humidity30 AS "soilHumidity30",
+		a.soil_temperature40 AS "soilTemperature40",
+		a.soil_humidity40 AS "soilHumidity40",
+		a.soil_temperature50 AS "soilTemperature50",
+		a.soil_humidity50 AS "soilHumidity50",
+		a.soil_temperature60 AS "soilTemperature60",
+		a.soil_humidity60 AS "soilHumidity60",
+		a.add_user_id AS "addUserId",
+		a.update_user_id AS "updateUserId",
+		a.update_time AS "updateTime"
+	</sql>
+	<sql id="weatherJoins">
+	</sql>
+    
+	<select id="get" resultType="Weather">
+		SELECT 
+			<include refid="weatherColumns"/>
+		FROM jc_weather a
+		<include refid="weatherJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findTop8Data" resultType="Weather">
+		SELECT
+		<include refid="weatherColumns"/>
+		FROM jc_weather a ORDER  BY a.id ASC LIMIT 8
+	</select>
+	
+	<select id="findList" resultType="Weather">
+		SELECT 
+			<include refid="weatherColumns"/>
+		FROM jc_weather a
+		<include refid="weatherJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Weather">
+		SELECT 
+			<include refid="weatherColumns"/>
+		FROM jc_weather a
+		<include refid="weatherJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_weather(
+			number_id,
+			add_time,
+			wind_speed,
+			wind_direction,
+			rainfall,
+			temperature,
+			humidity,
+			air_pressure,
+			co2,
+			photosynthetically,
+			sunlight_duration,
+			radiate,
+			evaporation_capacity,
+			voltage,
+			soil_temperature10,
+			soil_humidity10,
+			soil_temperature20,
+			soil_humidity20,
+			soil_temperature30,
+			soil_humidity30,
+			soil_temperature40,
+			soil_humidity40,
+			soil_temperature50,
+			soil_humidity50,
+			soil_temperature60,
+			soil_humidity60
+		) VALUES (
+			#{numberId},
+			#{addTime},
+			#{windSpeed},
+			#{windDirection},
+			#{rainfall},
+			#{temperature},
+			#{humidity},
+			#{airPressure},
+			#{co2},
+			#{photosynthetically},
+			#{sunlightDuration},
+			#{radiate},
+			#{evaporationCapacity},
+			#{voltage},
+			#{soilTemperature10},
+			#{soilHumidity10},
+			#{soilTemperature20},
+			#{soilHumidity20},
+			#{soilTemperature30},
+			#{soilHumidity30},
+			#{soilTemperature40},
+			#{soilHumidity40},
+			#{soilTemperature50},
+			#{soilHumidity50},
+			#{soilTemperature60},
+			#{soilHumidity60}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_weather SET 	
+			<if test="numberId != null and numberId != ''">
+			number_id = #{numberId},
+			</if>
+			<if test="addTime != null and addTime != ''">
+			add_time = #{addTime},
+			</if>
+			<if test="windSpeed != null and windSpeed != ''">
+			wind_speed = #{windSpeed},
+			</if>
+			<if test="windDirection != null and windDirection != ''">
+			wind_direction = #{windDirection},
+			</if>
+			<if test="rainfall != null and rainfall != ''">
+			rainfall = #{rainfall},
+			</if>
+			<if test="temperature != null and temperature != ''">
+			temperature = #{temperature},
+			</if>
+			<if test="humidity != null and humidity != ''">
+			humidity = #{humidity},
+			</if>
+			<if test="airPressure != null and airPressure != ''">
+			air_pressure = #{airPressure},
+			</if>
+			<if test="co2 != null and co2 != ''">
+			co2 = #{co2},
+			</if>
+			<if test="photosynthetically != null and photosynthetically != ''">
+			photosynthetically = #{photosynthetically},
+			</if>
+			<if test="sunlightDuration != null and sunlightDuration != ''">
+			sunlight_duration = #{sunlightDuration},
+			</if>
+			<if test="radiate != null and radiate != ''">
+			radiate = #{radiate},
+			</if>
+			<if test="evaporationCapacity != null and evaporationCapacity != ''">
+			evaporation_capacity = #{evaporationCapacity},
+			</if>
+			<if test="voltage != null and voltage != ''">
+			voltage = #{voltage},
+			</if>
+			<if test="soilTemperature10 != null and soilTemperature10 != ''">
+			soil_temperature10 = #{soilTemperature10},
+			</if>
+			<if test="soilHumidity10 != null and soilHumidity10 != ''">
+			soil_humidity10 = #{soilHumidity10},
+			</if>
+			<if test="soilTemperature20 != null and soilTemperature20 != ''">
+			soil_temperature20 = #{soilTemperature20},
+			</if>
+			<if test="soilHumidity20 != null and soilHumidity20 != ''">
+			soil_humidity20 = #{soilHumidity20},
+			</if>
+			<if test="soilTemperature30 != null and soilTemperature30 != ''">
+			soil_temperature30 = #{soilTemperature30},
+			</if>
+			<if test="soilHumidity30 != null and soilHumidity30 != ''">
+			soil_humidity30 = #{soilHumidity30},
+			</if>
+			<if test="soilTemperature40 != null and soilTemperature40 != ''">
+			soil_temperature40 = #{soilTemperature40},
+			</if>
+			<if test="soilHumidity40 != null and soilHumidity40 != ''">
+			soil_humidity40 = #{soilHumidity40},
+			</if>
+			<if test="soilTemperature50 != null and soilTemperature50 != ''">
+			soil_temperature50 = #{soilTemperature50},
+			</if>
+			<if test="soilHumidity50 != null and soilHumidity50 != ''">
+			soil_humidity50 = #{soilHumidity50},
+			</if>
+			<if test="soilTemperature60 != null and soilTemperature60 != ''">
+			soil_temperature60 = #{soilTemperature60},
+			</if>
+			<if test="soilHumidity60 != null and soilHumidity60 != ''">
+			soil_humidity60 = #{soilHumidity60}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_weather
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

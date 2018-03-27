@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.message.dao.WaringMessageDao">
+
+    <sql id="waringMessageColumns">
+		a.id AS "id",
+		a.node_num AS "nodeNum",
+		a.message AS "message",
+		a.status AS "status",
+		a.property AS "property",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+
+    <sql id="waringMessageJoins">
+    </sql>
+
+    <select id="get" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        FROM jc_waring_message a
+        <include refid="waringMessageJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findListByUser" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        ,n.id AS nodeId
+        FROM
+        jc_waring_message a
+        JOIN jc_node n ON a.node_num = n.node_num
+        WHERE
+        n.user_id = #{id}
+        ORDER BY
+        a.create_date DESC
+    </select>
+
+    <select id="findList" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        FROM jc_waring_message a
+        <include refid="waringMessageJoins"/>
+        <where>
+            1=1
+
+            <if test="nodeNum != null and nodeNum != ''">
+                AND a.node_num = #{nodeNum}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+            <if test="nodes != null and nodes.size() != 0  ">
+                AND a.node_num IN
+                <foreach
+                        collection="nodes"
+                        item="nodeNum"
+                        open="("
+                        separator=","
+                        close=")">
+                    #{nodeNum}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.create_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllMessage" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        FROM jc_waring_message a
+        <include refid="waringMessageJoins"/>
+        <where>
+            1=1
+            <if test="nodeNum != null and nodeNum != ''">
+                AND a.node_num = #{nodeNum}
+            </if>
+            <if test="status != null and status != ''">
+                AND a.status = #{status}
+            </if>
+
+        </where>
+        ORDER BY a.create_date DESC
+    </select>
+
+    <select id="getByNodeAndProperty" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        FROM jc_waring_message a
+        <include refid="waringMessageJoins"/>
+        <where>
+            1=1
+            <if test="nodeNum != null and nodeNum != ''">
+                AND a.node_num = #{nodeNum}
+            </if>
+            <if test="property != null and property != ''">
+                AND a.property = #{property}
+            </if>
+
+        </where>
+        ORDER BY a.create_date DESC
+        LIMIT 0,1
+    </select>
+
+    <select id="findAllList" resultType="WaringMessage">
+        SELECT
+        <include refid="waringMessageColumns"/>
+        FROM jc_waring_message a
+        <include refid="waringMessageJoins"/>
+        <where>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.create_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO jc_waring_message(
+			node_num,
+			message,
+			status,
+			property,
+			create_date
+		) VALUES (
+			#{nodeNum},
+			#{message},
+			#{status},
+			#{property},
+			#{createDate}
+		)
+	</insert>
+
+    <update id="update">
+		UPDATE jc_waring_message SET 	
+			node_num = #{nodeNum},
+			message = #{message},
+			status = #{status},
+			property = #{property},
+			update_date=#{updateDate}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE FROM jc_waring_message
+		WHERE id = #{id}
+	</update>
+
+</mapper>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.farmlandjob.dao.FarmlandJobDao">
+    
+	<sql id="farmlandJobColumns">
+		a.id AS "id",
+		a.job_type_id AS "jobTypeId",
+		a.farmerland_id AS "farmerlandId",
+		a.crop_name AS "cropName",
+		a.worker_id AS "workerId",
+		a.type_or_name AS "typeOrName",
+		a.amount AS "amount",
+		a.img AS "img",
+		a.flag AS "flag",
+		a.remark AS "remark",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.user_id AS "user.id",
+		a.used_id AS "usedId",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="farmlandJobJoins">
+			LEFT JOIN sys_user u15 ON u15.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="FarmlandJob">
+		SELECT 
+			<include refid="farmlandJobColumns"/>
+		FROM jc_farmland_job a
+		<include refid="farmlandJobJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="FarmlandJob">
+		SELECT 
+			<include refid="farmlandJobColumns"/>
+		FROM jc_farmland_job a
+		<include refid="farmlandJobJoins"/>
+		<where>
+			
+			<if test="jobTypeId != null and jobTypeId != ''">
+				AND a.job_type_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{jobTypeId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{jobTypeId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{jobTypeId},'%')</if>
+			</if>
+			<if test="cropName != null and cropName != ''">
+				AND a.crop_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{cropName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{cropName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{cropName},'%')</if>
+			</if>
+			<if test="usedId != null and usedId != ''">
+				AND a.used_id =#{usedId}
+			</if>
+			<if test="user != null and user.id!=null and user.id != ''">
+				AND a.user_id =#{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="FarmlandJob">
+		SELECT 
+			<include refid="farmlandJobColumns"/>
+		FROM jc_farmland_job a
+		<include refid="farmlandJobJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_farmland_job(
+			id,
+			job_type_id,
+			farmerland_id,
+			crop_name,
+			worker_id,
+			type_or_name,
+			amount,
+			img,
+			flag,
+			remark,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			used_id,
+			user_id
+		) VALUES (
+			#{id},
+			#{jobTypeId},
+			#{farmerlandId},
+			#{cropName},
+			#{workerId},
+			#{typeOrName},
+			#{amount},
+			#{img},
+			#{flag},
+			#{remark},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{usedId},
+			#{user.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_farmland_job SET 	
+			job_type_id = #{jobTypeId},
+			farmerland_id = #{farmerlandId},
+			crop_name = #{cropName},
+			worker_id = #{workerId},
+			type_or_name = #{typeOrName},
+			amount = #{amount},
+			img = #{img},
+			flag = #{flag},
+			remark = #{remark},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+				used_id=#{usedId},
+			user_id = #{user.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_farmland_job
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

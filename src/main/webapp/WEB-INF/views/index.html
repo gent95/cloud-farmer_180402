@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>serverConf</title>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var saveDataAry=[];
+            var data1={"id":"123","addr":"gz"};
+            var data2={"id":"544","addr":"gr"};
+            saveDataAry.push(data1);
+            saveDataAry.push(data2);
+            $.ajax({
+                type:"POST",
+                url:"/farmland/list",
+                dataType:"json",
+                contentType:"application/json",
+                data:JSON.stringify(saveDataAry),
+                success:function(data){
+
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+
+<form action="http://61.149.204.178:91/admin/upload" method="post" enctype="multipart/form-data">
+    <input name="name" type="text" >
+    <input type="submit" value="test">
+</form>
+<img src="http://61.149.204.178:8085/index/img.png">
+</body>
+</html>

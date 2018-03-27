@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.app.banner.dao.AppBannerDao">
+    
+	<sql id="appBannerColumns">
+		a.id AS "id",
+		a.url AS "url",
+		a.path AS "path",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="appBannerJoins">
+	</sql>
+    
+	<select id="get" resultType="AppBanner">
+		SELECT 
+			<include refid="appBannerColumns"/>
+		FROM app_banner a
+		<include refid="appBannerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AppBanner">
+		SELECT 
+			<include refid="appBannerColumns"/>
+		FROM app_banner a
+		<include refid="appBannerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AppBanner">
+		SELECT 
+			<include refid="appBannerColumns"/>
+		FROM app_banner a
+		<include refid="appBannerJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO app_banner(
+			url,
+			path,
+			del_flag
+		) VALUES (
+			#{url},
+			#{path},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE app_banner SET 	
+			url = #{url},
+			path = #{path}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE app_banner SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

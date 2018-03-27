@@ -1,0 +1,77 @@
+@charset "utf-8";
+/*rem 布局*/
+html,body{font-family: "Helvetica Neue",Arial,"Microsoft Yahei",Helvetica,sans-serif,Lato;}
+/*a, body, html{color: #10181f;}*/
+.mapbg{
+    background: url(/static/images/homePage/tu-1.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+}
+.primary-map{margin-top: 30px;}
+.primary-map #main{width: 100%; height: 600px; background: rgba(0,0,0,.3);}
+.map-unit td{text-align: center; font: 14px "Helvetica Neue"; padding: 5px;}
+.map-unit{position: relative; overflow: hidden;}
+.map-title{
+    position: absolute; top: 5px; right: 0px;
+    margin: 0;
+    font-size: 14px; color: #fff;
+}
+.logo:hover{
+    background: none;
+}
+.middle{
+    position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    margin: auto;
+}
+
+
+
+
+
+
+
+
+
+
+@media(max-width: 992px){
+    .primary-map #main{margin-top: 0; margin-bottom: 30px;}
+}
+
+@media screen  and (max-width: 768px) {
+    html {
+        font-size: 40px;
+    }
+    .logo{width: 190px;}
+    .logo img{
+        display: block;
+        max-width: 100%; height: auto;
+    }
+    .navbar{margin: 0;}
+    .primary-map{margin:0 auto; padding: 0 15px 15px;}
+}
+
+@media screen and (max-width: 640px) {
+    html {
+        font-size: 34.133px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    html {
+        font-size: 25.6px;
+    }
+}
+
+@media screen and (min-width: 375px) {
+    html {
+        font-size: 20px;
+    }
+}
+
+@media screen and (min-width: 320px) {
+    html {
+        font-size: 17.067px;
+    }
+}

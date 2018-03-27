@@ -1,0 +1,545 @@
+@charset "utf-8";
+@font-face {
+    font-family: pingfang-regular;
+    src: url('/static/font/pingfangregular.otf');
+}
+
+html,.body {
+    color: #fff;
+    background: url(/static/images/homePage/tu-1.jpg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: pingfang-regular;
+    background-position: center 0;
+    background-size: cover;
+    -webkit-background-size: cover; /* 兼容Webkit内核浏览器如Chrome和Safari */
+    -o-background-size: cover; /* 兼容Opera */
+    zoom: 1;
+}
+
+input, input:focus, button {
+    outline: none;
+}
+
+a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.header {
+    background: url(/static/images/login/juxing-2.png);
+    height: 75px;
+    position: relative;
+    height: auto;
+    padding: 8px 0;
+    line-height: 60px;
+}
+
+
+.he_left {
+    margin-left: 10%;
+    width: 485px;
+    float: left;
+    margin-top: 0.5%;
+}
+
+.he_rigth {
+    float: right;
+    margin-right: 5%;
+    margin-top: 1%;
+    font-size: 18px;
+}
+
+.he_left {
+    margin-left: 5%;
+    margin-top: 0;
+}
+
+.he_left img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.he_rigth {
+    margin-top: 0;
+}
+
+.content {
+    width: 555px;
+    height: 353px;
+    background: url(/static/images/login/yuanjiao-1.png) no-repeat center;
+    background-size: 100% 100%;
+    margin: 0 auto;
+}
+
+.cont {
+    width: 555px;
+    height: 669px;
+    background: url(/static/images/register/back-1.png);
+    margin: 0 auto;
+    margin-top: 4%;
+    border-radius: 20px;
+}
+
+.content .form-signin {
+    padding-top: 25px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+.fixed-center {
+    position: absolute;
+    top: 15px;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+}
+.texts {
+    font-size: 34.34px;
+    margin-bottom: 20px;
+}
+.texts2 {
+    font-size: 34.34px;
+    margin-bottom: 15%;
+}
+
+.username1 {
+    /*height: 70px;*/
+    margin-bottom: 30px;
+    border-bottom: 2px solid #FFFFFF;
+}
+
+.input {
+    border: 0px;
+    background: rgba(0, 0, 0, 0);
+    font-size: 30px;
+    height: 39px;
+    width: 92%;
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.input:focus {
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.jizhu {
+    font-size: 14.33px;
+    margin: 15px 0;
+    margin-bottom: 25px;
+}
+
+.jizhu a {
+    font-size: 14.33px;
+    font-family: pingfang-regular;
+}
+
+.jizhu .oneo {
+    margin-left: 1%;
+    margin-right: 65%;
+}
+.jizhu a, .jizhu input, .jizhu span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.btn {
+    margin-top: 2%;
+    margin: 0 auto;
+    background: url(/static/images/login/yuanjiao-3.png);
+    height: 41px;
+    width: 191px;
+    text-align: center;
+    border: 0px;
+    font-size: 20.45px;
+    color: #FFFFFF;
+    margin-left: 28%;
+}
+
+.required {
+    border-radius: 6px;
+    border: 1px solid #FFFFFF;
+    background: rgba(0, 0, 0, 0);
+    height: 29px;
+    width: 270px;
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.email {
+    border-radius: 6px;
+    border: 1px solid #FFFFFF;
+    background: rgba(0, 0, 0, 0);
+    height: 29px;
+    width: 270px;
+    margin-right: 3%;
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.reda {
+    font-size: 16px;
+    font-family: pingfang-regular;
+    text-align: right;
+    margin-bottom: 8%;
+}
+.reda span, .reda input{
+    display: inline-block; vertical-align: middle;
+}
+.reda .required, .reda .email{
+    width: 263px;
+}
+
+.regis {
+    display: block;
+    background: url(/static/images/login/yuanjiao-3.png);
+    height: 41px;
+    width: 191px;
+    text-align: center;
+    margin-top: 10%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 20.45px;
+    border: 0px;
+    color: #FFFFFF;
+}
+
+.gain {
+    background: rgba(0, 0, 0, 0);
+    text-align: center;
+    font-size: 20.45px;
+    color: #FFFFFF;
+    border: 1px solid #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.header2 {
+    position: relative;
+    display: table;
+    height: auto;
+    margin: 0 auto;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.header2 .alert {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.alert {
+    position: relative;
+    width: 300px;
+    margin: 0 auto;
+    *padding-bottom: 0px;
+}
+
+
+.alert {
+    position: relative;
+    width: 300px;
+    margin: 0 auto;
+    *padding-bottom: 0px;
+}
+
+.error {
+    background: none;
+    width: 270px;
+    font-weight: normal;
+    color: inherit;
+    margin: 0;
+}
+
+.contPassword {
+    width: 555px;
+    height: 369px;
+    background: url(/static/images/register/back-1.png);
+    border-radius: 20px;
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);	/* IE 9 */
+    -moz-transform: translate(-50%,-50%);	/* Firefox */
+    -webkit-transform: translate(-50%,-50%); /* Safari 和 Chrome */
+    -o-transform: translate(-50%,-50%);
+}
+
+.inputs1 {
+    border-radius: 6px;
+    border: 1px solid #FFFFFF;
+    background: rgba(0, 0, 0, 0);
+    color: #FFFFFF;
+    font-size: 16px;
+}
+
+.contPassword .form-signin {
+    padding-top: 5%;
+    padding-left: 15%;
+    padding-right: 18%;
+}
+
+.officeName {
+    height: 29px;
+    width: 230px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #ffffff;
+    font-size: 16px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.officeName option {
+    background-color: rgba(0, 0, 0, 0.40);
+}
+
+select {
+    background-color: rgba(0, 0, 0, 0);
+}
+.ra{
+    margin-right: 40%;
+}
+.nc{
+    margin-bottom: 16%;
+}
+input[type="radio"]{
+    height: 20px;
+    width: 20px;
+}
+.noshow{
+    display: none;
+}
+.nc input[type=radio]{display: inline-block; *display: inline; *zomm: 1; vertical-align: middle;}
+
+.wenjian{
+    position: fixed; bottom: 35px; right: 15px;
+}
+.footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+.cell {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    padding: 10px 0;
+    border-bottom: 0.05rem solid #fff;
+}
+.cell > input{text-indent: 5px;}
+.cell img, .cell .input {
+    vertical-align: middle;
+    margin-top: 0;
+    height: 25px;
+}
+.padd{padding: 35px 0px 45px;}
+.main-content{
+    width: 555px; margin-left: auto; margin-right: auto; border-radius: 10px;
+    background: url(/static/images/main-content.png) repeat;
+}
+.main-content .title{
+    margin-bottom: 50px;
+    font-size: 34.34px;
+    text-indent: 60px;
+}
+.main-content .reda-name{
+    display: inline-block;
+}
+
+.translate-center{
+    position: absolute; top: 50%; left: 50%;
+    /*width: 86%; height: auto; margin: auto;*/
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);	/* IE 9 */
+    -moz-transform: translate(-50%,-50%);	/* Firefox */
+    -webkit-transform: translate(-50%,-50%); /* Safari 和 Chrome */
+    -o-transform: translate(-50%,-50%);
+}
+.floatR {float: right;}
+.w270{width: 263px; margin-right: 15px;}
+.w270 input{width: 48%; height: 29px; margin-left: 1%; font-size: 16px; text-align: center; line-height: 29px;}
+.w270 input:first-child{margin-left: 0;}
+.main-content .reda{width: 70%; margin-left: auto; margin-right: auto;}
+
+@media(max-width: 1600px){
+    .reda{margin-bottom: 4%;}
+}
+
+@media (max-width: 768px) {
+    .header {
+        position: relative;
+        height: auto;
+        padding: 1% 0;
+        line-height: 32px;
+    }
+
+    .content {
+        width: 290px;
+        height: 240px;
+    }
+
+    .he_left {
+        width: 190px;
+        height: 32px;
+        margin-left: 5%;
+        margin-top: 0;
+    }
+
+    .he_left img {
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+    }
+
+    .he_rigth {
+        margin-top: 0;
+        font-size: 16px;
+    }
+
+
+    .jizhu {
+        margin: 15px 0;
+    }
+
+    .jizhu .oneo {
+        margin-right: 5px;
+        line-height: 20px;
+    }
+
+    .jizhu a {
+        font-size: 14px;
+    }
+
+    .content .form-signin{
+        padding: 15px;
+        padding-top: 20px;
+    }
+    .form-signin {
+        padding: 15px;
+    }
+
+    .form-signin .btn {
+        display: block;
+        width: 160px;
+        height: 32px;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 0.8rem;
+        -webkit-background-size: 100% 100%;
+        background-size: 100% 100%;
+    }
+
+    .cell {
+        display: inline-block;
+        vertical-align: middle;
+        width: 100%;
+        padding-bottom: 5px;
+        padding-top: 10px;
+        border-bottom: 1px solid #fff;
+    }
+
+    .cell img, .cell .input {
+        vertical-align: middle;
+        margin-top: 0;
+        width: 18px;
+        height: 18px;
+    }
+
+    .form-signin .input {
+        width: 80%;
+        font-size: 14px;
+    }
+
+    .input {
+        height: auto;
+    }
+
+    .footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 15px;
+    }
+
+    .username1, .password1 {
+        height: auto;
+        height: 40px;
+        margin-bottom: 0;
+    }
+
+    .texts {
+        height: 28px;
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .contPassword{
+        position: absolute; top: 50%; left: 50%;
+        width: 86%; height: auto; margin: auto;
+        transform: translate(-50%,-50%);
+        -ms-transform: translate(-50%,-50%);	/* IE 9 */
+        -moz-transform: translate(-50%,-50%);	/* Firefox */
+        -webkit-transform: translate(-50%,-50%); /* Safari 和 Chrome */
+        -o-transform: translate(-50%,-50%);
+        width: 290px;
+    }
+    .contPassword .form-signin{
+        padding: 15px;
+        padding-bottom: 20px;
+    }
+    .texts2{
+        height: auto; margin: 0 0 15px;
+        font-size: 20px;
+    }
+    .nc{margin-bottom: 15px;}
+    .nc span{
+        display: block; float: left;
+    }
+    .nc .ra{
+        margin: auto;
+    }
+    .nc input[type=radio]{
+        margin-right: 15px;
+    }
+    .show{text-align: left; margin-bottom: 15px;}
+    .show .required{
+        width: 60%;
+    }
+    .show .help-inline{
+        vertical-align: middle;
+    }
+    .regis{
+        display: block;
+        width: 160px; height: 32px; margin: auto;
+        background-size: contain; background-repeat: no-repeat; background-position: center;
+    }
+    .wenjian img{
+        max-width: 20px; height: auto;
+    }
+    .padd{padding: 0px;}
+    .main-content{width: 86%; -webkit-overflow-scrolling: touch; overflow-scrolling: touch; overflow-y: auto; }
+    .main-content .title{margin-bottom: 15px; font-size: 20px; text-indent: 0;}
+    .reda{ margin-bottom: 5px;}
+    .main-content .reda-name{padding-bottom: 5px; width: 108px}
+    .w270.floatR{float: none;}
+    .w270{width: 100%;}
+    .w270 input:first-child{margin-left: 50%;}
+    .w270 input{display: block; width: 45%; margin-left: 50%; margin-bottom: 5px;}
+    .main-content .reda{width: 100%;}
+    .reda-name{width: 45%;}
+    .reda .required{width: 45%;}
+    .reda .email{width: 45%; margin-right: 12px;}
+    .translate-center{width: 320px;}
+    .officeName{width: 110px;}
+}
+@meida(max-width: 560px){
+
+}
+@media(max-width: 320px){
+    .show .required{
+        width: 58%;
+    }
+    .translate-center{width: 290px;}
+}

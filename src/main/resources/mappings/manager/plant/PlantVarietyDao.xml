@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.plant.dao.PlantVarietyDao">
+    
+	<sql id="plantVarietyColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.remark AS "remark",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="plantVarietyJoins">
+	</sql>
+    
+	<select id="get" resultType="PlantVariety">
+		SELECT 
+			<include refid="plantVarietyColumns"/>
+		FROM jc_plan_variety a
+		<include refid="plantVarietyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PlantVariety">
+		SELECT 
+			<include refid="plantVarietyColumns"/>
+		FROM jc_plan_variety a
+		<include refid="plantVarietyJoins"/>
+		<where>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="createBy!=null and createBy!=''">
+				and a.create_by =#{createBy.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findListByUser" resultType="PlantVariety">
+		SELECT
+			<include refid="plantVarietyColumns"/>
+		FROM jc_plan_variety a
+		<include refid="plantVarietyJoins"/>
+		<where>
+			<if test="id!=null and id!=''">
+				and a.create_by =#{id}
+			</if>
+		</where>
+	</select>
+
+	<select id="findAllList" resultType="PlantVariety">
+		SELECT 
+			<include refid="plantVarietyColumns"/>
+		FROM jc_plan_variety a
+		<include refid="plantVarietyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_plan_variety(
+			name,
+			create_date,
+			create_by,
+			update_date,
+			update_by,
+			remark
+		) VALUES (
+			#{name},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_plan_variety SET 	
+			name = #{name},
+			create_date = #{createDate},
+			create_by = #{createBy.id},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id},
+			remark=#{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_plan_variety
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

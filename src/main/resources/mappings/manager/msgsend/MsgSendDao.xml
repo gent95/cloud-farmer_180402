@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.msgsend.dao.MsgSendDao">
+    
+	<sql id="msgSendColumns">
+		a.id AS "id",
+		a.ip AS "ip",
+		a.iphone AS "iphone",
+		a.add_time AS "addTime",
+		a.add_user_id AS "addUserId",
+		a.update_time AS "updateTime",
+		a.update_user_id AS "updateUserId"
+	</sql>
+	
+	<sql id="msgSendJoins">
+	</sql>
+    
+	<select id="get" resultType="MsgSend">
+		SELECT 
+			<include refid="msgSendColumns"/>
+		FROM jc_msg_send a
+		<include refid="msgSendJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="MsgSend">
+		SELECT 
+			<include refid="msgSendColumns"/>
+		FROM jc_msg_send a
+		<include refid="msgSendJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findListNumber" resultType="MsgSend">
+		SELECT
+		<include refid="msgSendColumns"/>
+		FROM jc_msg_send a
+		<include refid="msgSendJoins"/>
+		<where>
+		a.ip =#{ip} and a.iphone=#{iphone} and DATE_FORMAT(a.add_time,'%Y-%m-%d')=${nowTime}
+		</where>
+	</select>
+	<select id="findAllList" resultType="MsgSend">
+		SELECT 
+			<include refid="msgSendColumns"/>
+		FROM jc_msg_send a
+		<include refid="msgSendJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_msg_send(
+			ip,
+			iphone,
+			add_time,
+			add_user_id,
+			update_time,
+			update_user_id
+		) VALUES (
+			#{ip},
+			#{iphone},
+			#{addTime},
+			#{addUserId},
+			#{updateTime},
+			#{updateUserId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_msg_send SET 	
+			ip = #{ip},
+			iphone = #{iphone},
+			add_time = #{addTime},
+			add_user_id = #{addUserId},
+			update_time = #{updateTime},
+			update_user_id = #{updateUserId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_msg_send
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

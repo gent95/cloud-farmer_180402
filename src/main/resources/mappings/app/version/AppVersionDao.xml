@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.app.version.dao.AppVersionDao">
+    
+	<sql id="appVersionColumns">
+		a.id AS "id",
+		a.in_version AS "inVersion",
+		a.out_version AS "outVersion",
+		a.remark AS "remark",
+		a.status AS "status",
+		a.url AS "url",
+		a.auto_update AS "autoUpdate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate"
+	</sql>
+	
+	<sql id="appVersionJoins">
+	</sql>
+    
+	<select id="findNewVersion" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM app_version a
+		ORDER BY create_date DESC LIMIT 0,1
+	</select>
+	<select id="get" resultType="AppVersion">
+		SELECT
+			<include refid="appVersionColumns"/>
+		FROM app_version a
+		<include refid="appVersionJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findList" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM app_version a
+		<include refid="appVersionJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AppVersion">
+		SELECT 
+			<include refid="appVersionColumns"/>
+		FROM app_version a
+		<include refid="appVersionJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO app_version(
+			in_version,
+			out_version,
+			remark,
+			status,
+			url,
+			auto_update,
+			create_by,
+			create_date,
+			update_by,
+			update_date
+		) VALUES (
+			#{inVersion},
+			#{outVersion},
+			#{remark},
+			#{status},
+			#{url},
+			#{autoUpdate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE app_version SET 	
+			<if test="inVersion != null and inVersion != ''">
+			in_version = #{inVersion},
+			</if>
+			<if test="outVersion != null and outVersion != ''">
+			out_version = #{outVersion},
+			</if>
+			<if test="remark != null and remark != ''">
+			remark = #{remark},
+			</if>
+			<if test="status != null and status != ''">
+			status = #{status},
+			</if>
+			<if test="url != null and url != ''">
+			url = #{url},
+			</if>
+			<if test="autoUpdate != null and autoUpdate != ''">
+			auto_update = #{autoUpdate},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+			update_by = #{updateBy.id},
+			</if>
+			<if test="updateDate != null and updateDate != ''">
+			update_date = #{updateDate}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM app_version
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

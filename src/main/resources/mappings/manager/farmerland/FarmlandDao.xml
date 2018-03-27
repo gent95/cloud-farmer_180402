@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.farmerland.dao.FarmlandDao">
+
+    <sql id="farmlandColumns">
+		a.id AS "id",
+		a.farmland_num AS "farmlandNum",
+		a.alias AS "alias",
+		a.land_type AS "landType",
+		a.plant_variety AS "plantVaritety",
+		a.user_id AS "user.id",
+		a.used_id AS "usedId",
+		u.name AS "usedName",
+		a.assigne_time AS "assigneTime",
+		a.farmer_id AS "farmer.id",
+		f.name AS "farmer.name",
+		a.area AS "area",
+		a.addr AS "addr",
+		a.realy_id AS "relay.id",
+		a.order_num AS "orderNum",
+		a.use_flag AS "useFlag",
+		a.del_flag AS "delFlag",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		u6.name AS "user.name",
+		r.relay_num AS "relay.relayNum"
+	</sql>
+
+    <sql id="farmlandJoins">
+		LEFT JOIN sys_user u6 ON u6.id = a.user_id
+		LEFT JOIN sys_user u ON u.id = a.used_id
+		LEFT  JOIN jc_farmer f on f.id=a.farmer_id
+		LEFT  JOIN  jc_relay r on r.id=a.realy_id
+	</sql>
+    <select id="findPlant" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        <where>
+            a.del_flag = 0
+            <if test="farmer != null and farmer.id != '' and farmer.id!=null">
+                AND a.farmer_id=#{farmer.id}
+            </if>
+            GROUP BY a.plant_variety
+        </where>
+    </select>
+
+    <select id="findPlantTypeCountByFarmerId" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        ,COUNT(a.plant_variety) AS plantNum
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        WHERE a.farmer_id = #{farmerId} GROUP BY a.plant_variety HAVING COUNT(a.plant_variety) >=1;
+    </select>
+
+    <select id="get" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        WHERE a.id = #{id}
+    </select>
+    <select id="findFarmerlandNumByFarmerId" resultType="java.lang.Integer">
+        select
+        COUNT(*)
+        from jc_farmland a
+        LEFT JOIN jc_farmer f on f.id=a.farmer_id
+        <where>
+            a.del_flag =1 AND a.farmer_id=#{farmer.id}
+        </where>
+    </select>
+
+    <select id="findListAll" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        ,(SELECT COUNT(*) FROM jc_node WHERE a.id = farmland_id ) nodeNumber
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        <where>
+            a.del_flag = 0
+            <if test="farmlandNum != null and farmlandNum != ''">
+                AND a.farmland_num LIKE
+                <if test="dbName == 'mysql'">concat('%',#{farmlandNum},'%')</if>
+                #{farmlandNum}
+            </if>
+            <if test="plantVaritety!= null and plantVaritety!= ''">
+                AND a.plant_variety LIKE
+                <if test="dbName == 'mysql'">concat('%',#{plantVaritety},'%')</if>
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="usedId != null and  usedId != ''">
+                AND a.used_id = #{usedId}
+            </if>
+            <if test="farmer != null and farmer.id != '' and farmer.id!=null">
+                AND a.farmer_id=#{farmer.id}
+            </if>
+
+            <if test="name != null and name != ''">
+                AND
+                a.alias LIKE concat('%',#{name},'%')
+                OR
+                a.plant_variety LIKE concat('%',#{name},'%')
+            </if>
+            <if test="farmerId != null and farmerId != ''">
+                AND a.farmer_id=#{farmerId}
+            </if>
+            <if test="farmer != null and farmer.name != '' and farmer.name!=null">
+                AND f.name LIKE
+                <if test="dbName == 'mysql'">concat('%',#{farmer.name},'%')</if>
+            </if>
+            <if test="usedName != null and usedName != ''">
+                AND u.name LIKE
+                <if test="dbName == 'mysql'">concat('%',#{usedName},'%')</if>
+            </if>
+            <if test="useFlag!= null and useFlag!= ''">
+                AND a.use_flag = #{useFlag}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        LIMIT #{startNum},10
+    </select>
+
+    <select id="findList" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        ,(SELECT COUNT(*) FROM jc_node WHERE a.id = farmland_id) nodeNumber
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        <where>
+            a.del_flag =0
+            <if test="farmlandNum != null and farmlandNum != ''">
+                AND a.farmland_num LIKE
+                <if test="dbName == 'mysql'">concat('%',#{farmlandNum},'%')</if>
+                #{farmlandNum}
+            </if>
+            <if test="plantVaritety!= null and plantVaritety!= ''">
+                AND a.plant_variety LIKE
+                <if test="dbName == 'mysql'">concat('%',#{plantVaritety},'%')</if>
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="usedId != null and  usedId != ''">
+                AND a.used_id = #{usedId}
+            </if>
+            <if test="farmer != null and farmer.id != '' and farmer.id!=null">
+                AND a.farmer_id=#{farmer.id}
+            </if>
+
+            <if test="name != null and name != ''">
+                AND
+                a.alias LIKE concat('%',#{name},'%')
+                OR
+                a.plant_variety LIKE concat('%',#{name},'%')
+            </if>
+            <if test="farmerId != null and farmerId != ''">
+                AND a.farmer_id=#{farmerId}
+            </if>
+            <if test="farmer != null and farmer.name != '' and farmer.name!=null">
+                AND f.name LIKE
+                <if test="dbName == 'mysql'">concat('%',#{farmer.name},'%')</if>
+            </if>
+            <if test="usedName != null and usedName != ''">
+                AND u.name LIKE
+                <if test="dbName == 'mysql'">concat('%',#{usedName},'%')</if>
+            </if>
+            <if test="useFlag!= null and useFlag!= ''">
+                AND a.use_flag = #{useFlag}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findPengCount" resultType="Integer">
+		SELECT COUNT(1) FROM  jc_farmland a where farmer_id = #{farmerId} AND land_type = 0
+	</select>
+    <select id="findFarmlandNum" resultType="Integer">
+		SELECT COUNT(1) FROM  jc_farmland a where used_id = #{usedId}
+	</select>
+
+    <select id="findTianCount" resultType="Integer">
+		SELECT COUNT(1) FROM  jc_farmland a where farmer_id = #{farmerId} AND land_type = 1
+	</select>
+
+    <select id="findAllList" resultType="Farmland">
+        SELECT
+        <include refid="farmlandColumns"/>
+        FROM jc_farmland a
+        <include refid="farmlandJoins"/>
+        <where>
+            a.del_flag = 0
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+		INSERT INTO jc_farmland(
+		farmland_num,
+		alias,
+		land_type,
+		plant_variety,
+		user_id,
+		used_id,
+		assigne_time,
+		farmer_id,
+		area,
+		addr,
+		order_num,
+		use_flag,
+		create_by,
+		create_date,
+		update_by ,
+		update_date ,
+		remarks,
+		del_flag
+		) VALUES (
+			#{farmlandNum},
+			#{alias},
+			#{landType},
+			#{plantVaritety},
+			#{user.id},
+			#{usedId},
+			#{assigneTime},
+			#{farmerId},
+			#{area},
+			#{addr},
+			#{orderNum},
+			#{useFlag},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+
+    <update id="update">
+        UPDATE jc_farmland SET
+        <if test="farmlandNum != null ">
+            farmland_num=#{farmlandNum},
+        </if>
+        <if test="alias != null ">
+            alias=#{alias},
+        </if>
+        <if test="landType != null ">
+            land_type =#{landType},
+        </if>
+        <if test="plantVaritety != null ">
+            plant_variety=#{plantVaritety},
+        </if>
+        <if test="user != null and user.id != null ">
+            user_id =#{user.id},
+        </if>
+        <if test="usedId != null ">
+            used_id=#{usedId},
+        </if>
+        <if test="assigneTime != null ">
+            assigne_time=#{assigneTime},
+        </if>
+        <if test="farmer != null and farmer.id  != null ">
+            farmer_id =#{farmer.id},
+        </if>
+        <if test="area != null ">
+            area=#{area},
+        </if>
+        <if test="addr != null ">
+            addr=#{addr},
+        </if>
+        <if test="relay != null and relay.id  != null ">
+            realy_id =#{relay.id},
+        </if>
+        <if test="orderNum != null ">
+            order_num =#{orderNum},
+        </if>
+        <if test="useFlag != null ">
+            use_flag=#{useFlag},
+        </if>
+        create_by =#{createBy.id},
+        create_date =#{createDate},
+        update_by =#{updateBy.id},
+        update_date = #{updateDate},
+        <if test="addr != null ">
+            remarks =#{remarks},
+        </if>
+        del_flag =#{delFlag}
+        WHERE id = #{id}
+    </update>
+    <update id="updateFarmland">
+			UPDATE jc_farmland SET
+		farmland_num=#{farmlandNum},
+		alias=#{alias},
+		land_type =#{landType},
+		plant_variety=#{plantVaritety},
+		user_id =#{user.id},
+		used_id=#{usedId},
+		assigne_time=#{assigneTime},
+		area=#{area},
+		addr=#{addr},
+		realy_id =#{relay.id},
+		order_num =#{orderNum},
+		use_flag=#{useFlag},
+		create_by =#{createBy.id},
+		create_date =#{createDate},
+		update_by =#{updateBy.id},
+		update_date = #{updateDate},
+		remarks =#{remarks},
+		del_flag =#{delFlag}
+		WHERE id = #{id}
+		</update>
+
+    <update id="updateById">
+		UPDATE jc_farmland SET
+		farmer_id =#{farmer.id},
+		realy_id =#{relay.id}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateByApp">
+		UPDATE jc_farmland SET
+			land_type =#{landType},
+			plant_variety=#{plantVaritety},
+			addr=#{addr},
+			area=#{area},
+			remarks =#{remarks}
+		WHERE id = #{id}
+	</update>
+
+    <update id="delete">
+		DELETE  FROM  jc_farmland  WHERE id = #{id}
+	</update>
+
+</mapper>

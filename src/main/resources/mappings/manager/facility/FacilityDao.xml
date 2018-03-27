@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.facility.dao.FacilityDao">
+    
+	<sql id="facilityColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.farmer_id AS "farmerId",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="facilityJoins">
+	</sql>
+    
+	<select id="get" resultType="Facility">
+		SELECT 
+			<include refid="facilityColumns"/>
+		FROM jc_facility a
+		<include refid="facilityJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Facility">
+		SELECT 
+			<include refid="facilityColumns"/>
+		FROM jc_facility a
+		<include refid="facilityJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="farmerId != null and farmerId != ''">
+				AND a.farmer_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{farmerId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{farmerId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{farmerId},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Facility">
+		SELECT 
+			<include refid="facilityColumns"/>
+		FROM jc_facility a
+		<include refid="facilityJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_facility(
+			name,
+			farmer_id,
+			create_date,
+			create_by,
+			update_date,
+			update_by
+		) VALUES (
+			#{name},
+			#{farmerId},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_facility SET 	
+			name = #{name},
+			farmer_id = #{farmerId},
+			create_date = #{createDate},
+			create_by = #{createBy.id},
+			update_date = #{updateDate},
+			update_by = #{updateBy.id}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_facility
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

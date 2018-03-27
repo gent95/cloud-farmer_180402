@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.smshistory.dao.SmsHistoryDao">
+    
+	<sql id="smsHistoryColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.ip AS "ip",
+		a.mobile AS "mobile",
+		a.message AS "message",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="smsHistoryJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="SmsHistory">
+		SELECT 
+			<include refid="smsHistoryColumns"/>
+		FROM jc_sms_history a
+		<include refid="smsHistoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="getLastSms" resultType="SmsHistory">
+		SELECT
+			<include refid="smsHistoryColumns"/>
+		FROM jc_sms_history a
+		<include refid="smsHistoryJoins"/>
+		WHERE a.mobile = #{mobile}
+		ORDER BY a.create_date DESC
+		Limit 0,1
+	</select>
+
+	<select id="findList" resultType="SmsHistory">
+		SELECT 
+			<include refid="smsHistoryColumns"/>
+		FROM jc_sms_history a
+		<include refid="smsHistoryJoins"/>
+		<where>
+			
+			<if test="mobile != null and mobile != ''">
+				AND a.mobile = #{mobile}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="SmsHistory">
+		SELECT 
+			<include refid="smsHistoryColumns"/>
+		FROM jc_sms_history a
+		<include refid="smsHistoryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_sms_history(
+			user_id,
+			ip,
+			mobile,
+			message,
+			create_by,
+			create_date,
+			update_by,
+			update_date
+		) VALUES (
+			#{user.id},
+			#{ip},
+			#{mobile},
+			#{message},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_sms_history SET 	
+			user_id = #{user.id},
+			ip = #{ip},
+			mobile = #{mobile},
+			message = #{message},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_sms_history
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

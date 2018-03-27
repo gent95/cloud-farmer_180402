@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.node.dao.NodeDao">
+
+    <sql id="nodeColumns">
+		a.id AS "id",
+		a.node_num AS "nodeNum",
+		a.type AS "type",
+		a.user_id AS "user.id",
+		a.node_alise AS "nodeAlise",
+		a.on_off_name AS "onOffName",
+		a.used_id AS "usedId",
+		u.name AS "usedName",
+		a.open_flag AS "openFlag",
+		a.degree AS "degree",
+		a.exception_flag AS "exceptionFlag",
+		a.warning_flag AS "warningFlag",
+		a.control_type AS "controlType",
+		a.relay_id AS "relayId",
+		r.relay_num AS "relayName",
+		a.cycle AS "cycle",
+		a.add_user_id AS "addUserId",
+		a.add_time AS "addTime",
+		a.update_user_id AS "updateUserId",
+		a.update_time AS "updateTime",
+		u4.name AS "user.name",
+		a.farmland_id AS "farmlandId",
+		f.alias  AS "farmlandName",
+		a.hanging_device AS "hangingDevice"
+	</sql>
+
+    <sql id="nodeJoins">
+		LEFT JOIN sys_user u4 ON u4.id = a.user_id
+		LEFT JOIN sys_user u ON u.id = a.used_id
+		LEFT  JOIN  jc_farmland f on f.id=a.farmland_id
+		LEFT  JOIN  jc_relay   r on r.id=a.relay_id
+	</sql>
+
+    <select id="get" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="getByNodeNum" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        WHERE a.node_num = #{nodeNum}
+    </select>
+    <select id="findByNodeNum" resultType="Node">
+		SELECT
+        <include refid="nodeColumns"/>
+		FROM jc_node a
+        <include refid="nodeJoins"/>
+		WHERE a.node_num = #{nodeNum}
+	</select>
+    <select id="getByNodeMac" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        WHERE a.node_num = #{clintMac}
+    </select>
+
+    <select id="selectAllNodeByUserId" resultType="Node">
+		SELECT
+		a.node_num AS nodeNum
+		FROM
+		jc_relay b
+		JOIN jc_node a ON b.id = a.relay_id
+		WHERE
+		b.user_id = #{id}
+	</select>
+    <select id="getNodeListByFamer" resultType="Node">
+		SELECT * FROM jc_node a
+		INNER JOIN jc_farmland f ON a.farmland_id=f.id
+		WHERE a.farmland_id IN (SELECT id FROM jc_farmland WHERE farmer_id=#{farmerId})
+	</select>
+    <select id="getNodeNum" resultType="java.lang.Integer">
+		SELECT
+			COUNT(*)
+		FROM jc_node a
+		WHERE a.relay_id = #{relayId}
+	</select>
+    <select id="getNodeNumberByFarmlandId" resultType="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM jc_node a
+		WHERE a.farmland_id = #{farmlandId}
+	</select>
+    <select id="findList" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        <where>
+            <if test="nodeNum != null and nodeNum != ''">
+                AND a.node_num LIKE concat('%',#{nodeNum},'%')
+            </if>
+            <if test="usedId != null and usedId != ''">
+                AND a.used_id =#{usedId}
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="farmlandId != null and farmlandId != ''">
+                AND a.farmland_id =#{farmlandId}
+            </if>
+            <if test="relayId !=null and relayId !=''">
+                AND a.relay_id =#{relayId}
+            </if>
+            <if test="relays !=null ">
+                AND a.relay_id in
+                <foreach collection="relays" item="relays" index="index"
+                         open="(" separator="," close=")">#{relays.id}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findListAll" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        <where>
+            <if test="nodeNum != null and nodeNum != ''">
+                AND a.node_num LIKE concat('%',#{nodeNum},'%')
+            </if>
+            <if test="usedId != null and usedId != ''">
+                AND a.used_id =#{usedId}
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="farmlandId != null and farmlandId != ''">
+                AND a.farmland_id =#{farmlandId}
+            </if>
+            <if test="relayId !=null and relayId !=''">
+                AND a.relay_id =#{relayId}
+            </if>
+            <if test="relays !=null ">
+                AND a.relay_id in
+                <foreach collection="relays" item="relays" index="index"
+                         open="(" separator="," close=")">#{relays.id}
+                </foreach>
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        GROUP BY a.id
+        LIMIT #{startNum},10
+    </select>
+
+    <select id="findAllList" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        <where>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+    <select id="findAllByNum" resultType="Node">
+        SELECT
+        <include refid="nodeColumns"/>
+        FROM jc_node a
+        <include refid="nodeJoins"/>
+        <where>
+            a.node_num = #{nodeNum}
+        </where>
+    </select>
+    <insert id="insert">
+		INSERT INTO jc_node(
+			node_num,
+			type,
+			user_id,
+			used_id,
+			open_flag,
+			degree,
+			exception_flag,
+			warning_flag,
+			control_type,
+			relay_id,
+			cycle,
+			add_user_id,
+			add_time,
+			update_user_id,
+			update_time,
+			farmland_id,
+			node_alise,
+		    on_off_name,
+			hanging_device
+		) VALUES (
+			#{nodeNum},
+			#{type},
+			#{user.id},
+			#{usedId},
+			#{openFlag},
+			#{degree},
+			#{exceptionFlag},
+			#{warningFlag},
+			#{controlType},
+			#{relayId},
+			#{cycle},
+			#{addUserId},
+			#{addTime},
+			#{updateUserId},
+			#{updateTime},
+			#{farmlandId},
+			#{nodeAlise},
+			#{onOffName},
+			#{hangingDevice}
+		)
+	</insert>
+
+    <update id="update">
+        UPDATE jc_node SET
+
+        <if test="type != null and type != ''">
+            type = #{type},
+        </if>
+        <if test="user != null and user.id != null and user.id != ''">
+            user_id = #{user.id},
+        </if>
+        <if test="usedId != null and usedId != ''">
+            used_id = #{usedId},
+        </if>
+        <if test="openFlag != null and openFlag != ''">
+            open_flag = #{openFlag},
+        </if>
+        <if test="degree != null and degree != ''">
+            degree = #{degree},
+        </if>
+        <if test="exceptionFlag != null and exceptionFlag != ''">
+            exception_flag = #{exceptionFlag},
+        </if>
+        <if test="warningFlag != null and warningFlag != ''">
+            warning_flag = #{warningFlag},
+        </if>
+        <if test="controlType != null and controlType != ''">
+            control_type = #{controlType},
+        </if>
+        <if test="relayId != null and relayId != ''">
+            relay_id = #{relayId},
+        </if>
+        <if test="cycle != null and cycle != ''">
+            cycle = #{cycle},
+        </if>
+        <if test="addUserId != null and addUserId != ''">
+            add_user_id = #{addUserId},
+        </if>
+        <if test="addTime != null and addTime != ''">
+            add_time = #{addTime},
+        </if>
+        <if test="updateUserId != null and updateUserId != ''">
+            update_user_id = #{updateUserId},
+        </if>
+        <if test="updateTime != null and updateTime != ''">
+            update_time = #{updateTime},
+        </if>
+        <if test="hangingDevice != null and hangingDevice != ''">
+            hanging_device=#{hangingDevice},
+        </if>
+        <if test="nodeAlise != null and nodeAlise != ''">
+            node_alise=#{nodeAlise} ,
+        </if>
+        <if test="onOffName != null and onOffName != ''">
+            on_off_name=#{onOffName},
+        </if>
+        <if test="farmlandId != null and farmlandId != ''">
+            farmland_id=#{farmlandId},
+        </if>
+        node_num = #{nodeNum}
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+		DELETE FROM  jc_node
+		WHERE id = #{id}
+	</update>
+
+    <update id="deleteByNodeNum">
+		DELETE FROM  jc_node
+		WHERE node_num = #{nodeNum}
+	</update>
+    <update id="deleteByRelayId">
+		DELETE  FROM jc_node
+		WHERE relay_id = #{id}
+	</update>
+
+</mapper>

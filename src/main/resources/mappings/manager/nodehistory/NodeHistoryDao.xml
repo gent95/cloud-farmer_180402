@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.nodehistory.dao.NodeHistoryDao">
+    
+	<sql id="nodeHistoryColumns">
+		a.id AS "id",
+		a.relay_id AS "relayId",
+		a.node_id AS "nodeId",
+		a.orders AS "orders",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id"
+	</sql>
+	
+	<sql id="nodeHistoryJoins">
+	</sql>
+    
+	<select id="get" resultType="NodeHistory">
+		SELECT 
+			<include refid="nodeHistoryColumns"/>
+		FROM jc_node_history a
+		<include refid="nodeHistoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="NodeHistory">
+		SELECT 
+			<include refid="nodeHistoryColumns"/>
+		FROM jc_node_history a
+		<include refid="nodeHistoryJoins"/>
+		<where>
+			
+			<if test="relayId != null and relayId != ''">
+				AND a.relay_id = #{relayId}
+			</if>
+			<if test="nodeId != null and nodeId != ''">
+				AND a.node_id = #{nodeId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="NodeHistory">
+		SELECT 
+			<include refid="nodeHistoryColumns"/>
+		FROM jc_node_history a
+		<include refid="nodeHistoryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO jc_node_history(
+			relay_id,
+			node_id,
+			orders,
+			create_date,
+			create_by,
+			update_date,
+			update_by
+		) VALUES (
+			#{relayId},
+			#{nodeId},
+			#{orders},
+			#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE jc_node_history SET 	
+			<if test="relayId != null and relayId != ''">
+			relay_id = #{relayId},
+			</if>
+			<if test="nodeId != null and nodeId != ''">
+			node_id = #{nodeId},
+			</if>
+			<if test="orders != null and orders != ''">
+			orders = #{orders},
+			</if>
+			<if test="updateDate != null and updateDate != ''">
+			update_date = #{updateDate},
+			</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">
+			update_by = #{updateBy.id}
+			</if>
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM jc_node_history
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,44 @@
+#main {
+    padding: 0;
+    margin: 0;
+}
+#main .container-fluid {
+    padding: 0 4px 0 6px;
+}
+#header {
+    margin: 0 0 8px;
+    position: static;
+}
+#header li {
+    font-size: 14px;
+    _font-size: 12px;
+}
+#header .brand {
+    font-family: pingfang-regular;
+    font-size: 26px;
+    padding-left: 33px;
+}
+
+#left {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#left .collapse {
+    position: static;
+}
+
+#userControl > li > a { /*color:#fff;*/
+    text-shadow: none;
+}
+
+#userControl > li > a:hover, #user #userControl > li.open > a {
+    background: transparent;
+}
+
+.selected {
+    font-size: 16.57px;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 6px;
+    color: white;
+}

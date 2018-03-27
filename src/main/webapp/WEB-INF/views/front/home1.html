@@ -1,0 +1,176 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: Administrator
+  Date: 2017/5/15
+  Time: 14:35
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Title</title>
+    <script type="text/javascript" src="${ctxStatic}/jquery/jquery-1.8.3.js" ></script>
+    <script type="text/javascript">
+        // 按需加载  (这个地方是从库里调柱状图，折线图)
+        require(
+            [
+                'echarts',
+                'echarts/chart/bar',
+                'echarts/chart/line'
+            ],
+            //这个地方的id是前面ul里的div的那个id，ajax里的方法应该不用动
+            function (ec) {
+                var chart = document.getElementById('chart2');
+                var echart = ec.init(chart);
+
+                /* echart.showLoading({
+                 text: '正在努力加载中...'
+                 }); */
+
+
+
+                // 同步执行
+                $.ajaxSettings.async = false;
+
+
+
+                var yValue = new Array();
+                var yDate=new Array();
+                var da=new Array();
+                if(infoList.data.length!=0){
+                    for(i=0;i<infoList.data.length;i++){
+                        yValue[i] = infoList.data[i].airHumidity;
+                        yDate[i]=infoList.data[i].addTime;
+                        da[i]=dateFormatUtil(yDate[i]);
+                    }
+                }
+
+                var option = {
+                    //设置标题的
+                    title : {
+                        text: '大气湿度',//大标题写类型
+                        subtext: '（%RH）',//小标题我写的单位
+                        textStyle: {
+                            color: '#BE6219',
+                            fontStyle: 'normal',
+                            fontWeight: 'bolder',
+                            fontFamily: 'sans-serif',
+                            fontSize: 18,
+                        }
+                    },
+                    tooltip : {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data:['大气湿度']
+                    },
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            mark : {show: true},
+                            dataView : {show: false, readOnly: false},
+                            magicType : {show: true, type: ['line', 'bar']},
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    //调整缩放的，设置成true的话效果拔群，可以当成附加的
+                    dataZoom : {
+                        show : false,
+                        start : 0,
+                        end : 100
+                    },
+                    //X轴，时间轴的动态显示，len的值是x轴分多少段，可以不改
+                    xAxis : [
+                        {
+                            type : 'category',
+                            axisLabel: {
+                                textStyle: {
+                                    color: '#BE6219'
+                                }
+                            },
+                            boundaryGap : true,
+                            data : (function(){
+                                return da;
+                            })()
+                        }
+
+                    ],
+                    //y轴，
+                    yAxis : [
+                        {
+                            type : 'value',
+                            axisLabel: {
+                                textStyle: {
+                                    color: '#BE6219'
+                                }
+                            },
+                            scale: true,
+                            name : '湿度',
+                            boundaryGap: [0.2, 0.2]
+                        }
+                    ],
+                    //值，push往里存值，len跟上面的X轴对应，要改都改
+                    series : [
+                        {
+                            name:'最新湿度',
+                            type:'line',
+                            data:(function (){
+                                return yValue;
+                            })()
+                        }
+                    ]
+                };
+                echart.setOption(option);
+                //初始化最近的值，下面替换
+                var lastData=new Array();
+                var ti=new Array();
+                //初始化X轴时间轴的值，下面替换
+                var axisData=new Array();
+                //清空计时器
+                var timeTicket;
+                clearInterval(timeTicket);
+                //是指计时器，第一个参数是一个函数，设置刚刚的那两个X轴和Y轴的值
+                //第二个参数2100是时间间隔，就是多长时间后再执行一次第一个函数，咱们改成传值间隔
+                timeTicket=setInterval(function (){
+
+                    var nodeMac = $("#mac").val();
+                    $.ajax({
+                        url:"${ctx}/nodedatadetails/nodeDataDetails/fetchLastData",
+                        type:"POST",
+                        data:{
+                            nodeMac:nodeMac
+                        },
+                        dataType:"json",
+                        success:function(info){
+                            for(i=0;i<info.data.length;i++)
+                            {
+                                lastData[i] = info.data[i].airHumidity;
+                                ti[i]=info.data[i].addTime;
+                                axisData[i] =dateFormatUtil(ti[i]);
+                            }
+                        }
+                    });
+                    /* //这个地方就是更新了Y的值
+                     lastData = 5 * Math.random(); */
+                    //这里更新了时间轴X的值
+
+                    // 动态数据接口 addData，然而之前都没有用到……
+                    echart.addData([
+                        [
+                            0,        // 系列索引
+                            lastData, // 新增数据
+                            false,     // 新增数据是否从队列头部插入
+                            false,     // 是否增加队列长度，false则自定删除原有数据，队头插入删队尾，队尾插入删队头
+                            axisData
+                        ]
+                    ]);
+                }, timeInterval);
+            }
+        );
+    </script>
+</head>
+<body>
+
+</body>
+</html>

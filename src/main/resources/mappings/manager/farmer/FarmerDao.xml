@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jctl.cloud.manager.farmer.dao.FarmerDao">
+    <sql id="farmerColumns">
+		a.id AS "id",
+		a.farmer_num AS "farmerNum",
+		a.name AS "name",
+		a.area AS "area",
+		a.plant_variety AS "plantVariety",
+		a.user_id AS "user.id",
+		a.used_id AS "usedId",
+		a.order_num AS "orderNum",
+		a.use_flag AS "useFlag",
+		a.del_flag AS "delFlag",
+		a.remarks AS "remarks",
+		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
+		a.update_date AS "updateDate",
+		a.update_by AS "updateBy.id",
+		u6.name AS "user.name",
+		u.name AS "usedName",
+		a.addr AS "addr"
+	</sql>
+
+    <sql id="farmerJoins">
+        LEFT JOIN sys_user u6 ON u6.id = a.user_id
+        LEFT JOIN sys_user u ON u.id = a.used_id
+    </sql>
+
+    <select id="get" resultType="Farmer">
+        SELECT
+        <include refid="farmerColumns"/>
+        FROM jc_farmer a
+        <include refid="farmerJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="Farmer">
+        SELECT
+        <include refid="farmerColumns"/>
+        ,(SELECT COUNT(*) FROM jc_relay r WHERE a.id = r.farmer_id and r.del_flag=0) relayNumber
+        ,(SELECT COUNT(*) FROM jc_farmland f WHERE a.id = f.farmer_id and f.del_flag=0) farmlandNumber
+        FROM jc_farmer a
+        <include refid="farmerJoins"/>
+        <where>
+            a.del_flag = 0
+            <if test="farmerNum != null and farmerNum != ''">
+                AND a.farmer_num LIKE
+                <if test="dbName == 'mysql'">concat('%',#{farmerNum},'%')</if>
+            </if>
+            <if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="useFlag!= null and useFlag!= ''">
+                AND a.use_flag = #{useFlag}
+            </if>
+            <if test="id!= null and id!= ''">
+                AND a.id = #{id}
+            </if>
+
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findFarmerByUserId" resultType="Farmer">
+        SELECT * from jc_farmer where user_id =#{user.id}
+    </select>
+
+    <select id="findListAll" resultType="Farmer">
+        SELECT
+        <include refid="farmerColumns"/>
+        ,(SELECT COUNT(*) FROM jc_relay WHERE a.id = farmer_id and del_flag=0) relayNumber
+        ,(SELECT COUNT(*) FROM jc_farmland WHERE a.id = farmer_id and del_flag=0) farmlandNumber,
+        relay.lat,relay.log As lng
+        FROM jc_farmer a
+        <include refid="farmerJoins"/>
+        LEFT JOIN jc_relay relay ON a.id = relay.farmer_id
+        <where>
+            a.del_flag = 0
+            <if test="farmerNum != null and farmerNum != ''">
+                AND a.farmer_num LIKE concat('%',#{farmerNum},'%')
+            </if>
+            <if test="name != null and name != ''">
+                AND a.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+            <if test="useFlag!= null and useFlag!= ''">
+                AND a.use_flag = #{useFlag}
+            </if>
+            <if test="usedId!= null and usedId!= ''">
+                AND a.used_id = #{usedId}
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        GROUP BY a.id
+        LIMIT #{startNum},10
+    </select>
+
+
+    <select id="findListAllFarmers" resultType="Farmer">
+        SELECT
+        a.id,a.name
+        FROM jc_farmer a
+        <where>
+            a.del_flag = 0
+            <if test="user != null and user.id != null and user.id != ''">
+                AND a.user_id = #{user.id}
+            </if>
+        </where>
+    </select>
+
+    <select id="findAllList" resultType="Farmer">
+        SELECT
+        <include refid="farmerColumns"/>
+        FROM jc_farmer a
+        <include refid="farmerJoins"/>
+        <where>
+            a.del_flag = 0
+            and a.use_flag=1
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO jc_farmer(
+        farmer_num,
+        name,
+        area,
+        plant_variety,
+        user_id,
+        remarks,
+        create_date,
+			create_by,
+			update_date,
+			update_by,
+        used_id,
+        addr
+        ) VALUES (
+        #{farmerNum},
+        #{name},
+        #{area},
+        #{plantVariety},
+        #{user.id},
+        #{remarks},
+     	#{createDate},
+			#{createBy.id},
+			#{updateDate},
+			#{updateBy.id},
+        #{usedId},
+        #{addr}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE jc_farmer SET
+        <if test="farmerNum != null">
+            farmer_num = #{farmerNum},
+        </if>
+        <if test="name != null ">
+            name = #{name},
+        </if>
+        <if test="area != null ">
+            area = #{area},
+        </if>
+        <if test="plantVariety != null ">
+            plant_variety = #{plantVariety},
+        </if>
+        <if test="user != null and user.id != null ">
+            user_id = #{user.id},
+        </if>
+        <if test="usedId != null ">
+            used_id=#{usedId},
+        </if>
+        <if test="orderNum != null ">
+            order_num = #{orderNum},
+        </if>
+        <if test="useFlag != null ">
+            use_flag = #{useFlag},
+        </if>
+        create_date = #{createDate},
+        create_by = #{createBy.id},
+        update_date = #{updateDate},
+        update_by = #{updateBy.id},
+        <if test="addr != null ">
+            addr=#{addr},
+        </if>
+        <if test="remarks != null ">
+            remarks=#{remarks},
+        </if>
+        del_flag=#{delFlag}
+        WHERE id = #{id}
+    </update>
+
+    <update id="delete">
+		DELETE FROM jc_farmer
+		WHERE id = #{id}
+	</update>
+
+</mapper>
