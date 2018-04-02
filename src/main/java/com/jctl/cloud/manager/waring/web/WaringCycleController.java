@@ -69,6 +69,7 @@ public class WaringCycleController extends BaseController {
         WaringCycle entity = null;
         if (StringUtils.isNotBlank(id)) {
             entity = waringCycleService.get(id);
+
         }
         if (entity == null) {
             entity = new WaringCycle();
